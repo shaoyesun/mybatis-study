@@ -4,6 +4,7 @@ import domain.Book;
 import domain.Classes;
 import domain.Student;
 import domain.Teacher;
+import interceptor.Page;
 import org.apache.ibatis.session.SqlSession;
 import util.SessionFactoryUtil;
 
@@ -15,17 +16,68 @@ import java.util.Map;
 public class TestMain {
 
     public static void main(String[] args) {
-        SqlSession session = SessionFactoryUtil.getSession();
+//        SqlSession session = SessionFactoryUtil.getSession("development");
+        SqlSession session = SessionFactoryUtil.getSession("beta");
+        List<Student> students =  session.selectList("dao.StudentDao.findAll");
+        System.out.println("dao.StudentDao.findAll:");
+        for(Student s : students) {
+            System.out.println("sid = " + s.getSid() + " | studentName = " + s.getStudentName());
+        }
+    }
+
+    /**
+     * 多数据源配置
+     */
+    public static void multDB() {
+        //        SqlSession session = SessionFactoryUtil.getSession("development");
+        SqlSession session = SessionFactoryUtil.getSession("beta");
+        List<Student> students =  session.selectList("dao.StudentDao.findAll");
+        System.out.println("dao.StudentDao.findAll:");
+        for(Student s : students) {
+            System.out.println("sid = " + s.getSid() + " | studentName = " + s.getStudentName());
+        }
+    }
+
+    /**
+     * 分页查找示例
+     * 1、继承Interceptor实现分页拦截器
+     * 2、Page实体类
+     * 3、config中配置拦截器（plugins标签）
+     */
+    public static void pageTest() {
+        SqlSession session = SessionFactoryUtil.getSession("development");
+        Page page = new Page();
+        page.setCurrentPage(2);
+        page.setPageNumber(2);
+        Map map = new HashMap();
+        map.put("page", page);
+        map.put("name", "%学生%");
+        //List<Student> students =  session.selectList("dao.StudentDao.findByPage", map);
+        List<Student> students =  session.selectList("dao.StudentDao.findStudentLikeNameByPage", map);
+        System.out.println("dao.StudentDao.findByPage:");
+        for(Student s : students) {
+            System.out.println("sid = " + s.getSid() + " | studentName = " + s.getStudentName());
+        }
+    }
+
+    /**
+     * 枚举映射示例
+     * 1、继承BaseTypeHandler实现类型handler
+     * 2、实现公用枚举接口
+     * 3、实现具体枚举类
+     * 4、对应字段引入枚举类型（<result column="sex" property="sex" typeHandler="handler.EnumKeyTypeHandler" javaType="handler.SexEnum"/>）
+     */
+    public static void enumTest() {
+        SqlSession session = SessionFactoryUtil.getSession("development");
         Student student = session.selectOne("dao.StudentDao.findOneStudent", 1L);
         System.out.println("dao.StudentDao.findOneStudent: \nstudentName = " + student.getStudentName() + "\n");
         System.out.println("sex: name = " + student.getSex().getName() + " ,value = " + student.getSex().getValue());
         System.out.println("country: name = " + student.getCountry().getName() + " ,value = " + student.getCountry().getValue());
-
     }
 
-    //映射关系相关查询
+    //映射关系相关查询示例
     public static void teacherStudentTest() {
-        SqlSession session = SessionFactoryUtil.getSession();
+        SqlSession session = SessionFactoryUtil.getSession("development");
         Student student = session.selectOne("dao.StudentDao.findOneStudent", 1L);
         System.out.println("dao.StudentDao.findOneStudent: \nstudentName = " + student.getStudentName() + "\nclasses name = " + student.getClasses().getClassesName() + "\n");
 
@@ -62,7 +114,7 @@ public class TestMain {
         session.commit();
     }
 
-    //简单增删改查
+    //简单增删改查示例
     public static void bookTest() {
         BookDao bookDao = new BookDaoImpl();
         List<Book> books = bookDao.findAll();
@@ -93,7 +145,7 @@ public class TestMain {
         System.out.println("findByIdAndNameWithIn: " + books.size());
 
         //不写接口的情况下实现查询
-        SqlSession session = SessionFactoryUtil.getSession();
+        SqlSession session = SessionFactoryUtil.getSession("development");
         Book book2 = session.selectOne("dao.BookDao.findByName", "book1");
         System.out.println("BookDao.findByName: name = " + book2.getName() + ", id = " + book2.getId());
 

@@ -23,6 +23,9 @@
     <select id="findOneStudentAndClass" resultMap="studentMap" parameterType="Long">
         select s.*,c.* from student s, classes c where s.classes_id = c.cid and s.sid = #{sid};
     </select>
+    <select id="findAll" resultMap="studentMap">
+        select * from student
+    </select>
     <!--批量插入Student对象-->
     <insert id="insertStudents" parameterType="map" keyProperty="sid" useGeneratedKeys="true">
         insert into student(student_name, classes_id) values
@@ -30,4 +33,12 @@
             (#{s.studentName}, #{s.classes.cid})
         </foreach>
     </insert>
+    <!--分页查找-->
+    <select id="findByPage" resultMap="studentMap" >
+        select * from student
+    </select>
+    <!--分页条件查找-->
+    <select id="findStudentLikeNameByPage" resultMap="studentMap" >
+        select * from student where student_name like #{name}
+    </select>
 </mapper>

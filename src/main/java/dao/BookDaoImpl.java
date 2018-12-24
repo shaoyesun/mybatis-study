@@ -10,7 +10,7 @@ import java.util.Map;
 public class BookDaoImpl implements BookDao {
     @Override
     public List<Book> findAll() {
-        SqlSession session = SessionFactoryUtil.getSession();
+        SqlSession session = SessionFactoryUtil.getSession("development");
         BookDao mapper = session.getMapper(BookDao.class);
         List<Book> books =  mapper.findAll();
         session.close();
@@ -19,14 +19,14 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public Book findOne(Long id) {
-        SqlSession session = SessionFactoryUtil.getSession();
+        SqlSession session = SessionFactoryUtil.getSession("development");
         BookDao mapper = session.getMapper(BookDao.class);
         return mapper.findOne(id);
     }
 
     @Override
     public void addBook(Book book) {
-        SqlSession session = SessionFactoryUtil.getSession();
+        SqlSession session = SessionFactoryUtil.getSession("development");
         BookDao mapper = session.getMapper(BookDao.class);
         mapper.addBook(book);
         session.commit();
@@ -35,7 +35,7 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<Book> findByIdWithIn(List ids) {
-        SqlSession session = SessionFactoryUtil.getSession();
+        SqlSession session = SessionFactoryUtil.getSession("development");
         BookDao mapper = session.getMapper(BookDao.class);
         List<Book> books =  mapper.findByIdWithIn(ids);
         session.close();
@@ -44,7 +44,7 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<Book> findByIdAndNameWithIn(Map params) {
-        SqlSession session = SessionFactoryUtil.getSession();
+        SqlSession session = SessionFactoryUtil.getSession("development");
         BookDao mapper = session.getMapper(BookDao.class);
         List<Book> books =  mapper.findByIdAndNameWithIn(params);
         session.close();
