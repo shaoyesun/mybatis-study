@@ -20,6 +20,7 @@ public class TestMain {
         System.out.println("dao.StudentDao.findOneStudent: \nstudentName = " + student.getStudentName() + "\n");
         System.out.println("sex: name = " + student.getSex().getName() + " ,value = " + student.getSex().getValue());
         System.out.println("country: name = " + student.getCountry().getName() + " ,value = " + student.getCountry().getValue());
+
     }
 
     //映射关系相关查询
