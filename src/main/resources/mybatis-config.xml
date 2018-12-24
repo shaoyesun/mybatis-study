@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--属性定义
+        可以配置在properties文件中，也可以配置在property元素中，也可以传递到SqlSessionFactoryBuilder().build(reader, props)方法中
+
+        如果属性在不只一个地方进行了配置，那么 MyBatis 将按照下面的顺序来加载：
+        1、在 properties 元素体内指定的属性首先被读取。
+        2、然后根据 properties 元素中的 resource 属性读取类路径下属性文件或根据 url 属性指定的路径读取属性文件，并覆盖已读取的同名属性。
+        3、最后读取作为方法参数传递的属性，并覆盖已读取的同名属性。
+    -->
+    <properties resource="dataSource.properties">
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+    </properties>
+    <!--这是 MyBatis 中极为重要的调整设置，它们会改变 MyBatis 的运行时行为-->
+    <settings>
+        <!--全局地开启或关闭配置文件中的所有映射器已经配置的任何缓存-->
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+    <!--别名定义-->
+    <typeAliases>
+        <typeAlias alias="book" type="domain.Book" />
+        <typeAlias alias="Classes" type="domain.Classes" />
+        <typeAlias alias="Student" type="domain.Student" />
+        <typeAlias alias="Teacher" type="domain.Teacher" />
+    </typeAliases>
+
+    <!--<typeHandlers>
+        <typeHandler handler="handler.SexEnumHandler" javaType="handler.SexEnum"/>
+    </typeHandlers>-->
+    <!--数据源配置-->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <!--<property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/mybatis_study"/>
+                <property name="username" value="root"/>
+                <property name="password" value="root"/>-->
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+        <environment id="development1">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url1}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!--sql文件映射-->
+    <mappers>
+        <!-- 第一种方式：通过resource指定 -->
+        <!--<mapper resource="dao/BookDao.xml"/>-->
+
+        <!-- 第二种方式， 通过class指定接口，进而将接口与对应的xml文件形成映射关系
+             不过，使用这种方式必须保证以下两点：
+              1）接口与mapper文件同名(不区分大小写)
+              2）mapper文件与接口在相同目录
+        -->
+        <!--<mapper class="dao.BookDao"/>-->
+
+        <!-- 第三种方式，直接指定包，自动扫描，与方法二同理
+             不过，使用这种方式必须保证以下两点：
+              1）接口与mapper文件同名(不区分大小写)
+              2）mapper文件与接口在相同目录
+        -->
+        <package name="dao"/>
+    </mappers>
+</configuration>

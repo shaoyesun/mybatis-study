@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.TeacherDao">
+    <!--插入单个Teacher对象-->
+    <insert id="insertOne" parameterType="Teacher" keyProperty="tid" useGeneratedKeys="true">
+        insert into teacher(teacher_name) values (#{teacherName});
+    </insert>
+    <!--Teacher结果集映射-->
+    <resultMap id="teacherMap" type="Teacher">
+        <id column="tid" property="tid"/>
+        <result column="teacher_name" property="teacherName"/>
+        <collection property="students" ofType="Student">
+            <id column="sid" property="sid"/>
+            <result column="student_name" property="studentName"/>
+        </collection>
+    </resultMap>
+    <!--查询所有Teacher对象-->
+    <select id="findAll" resultMap="teacherMap">
+        select t.*, s.* from teacher t, student s, teacher_student ts where t.tid = ts.tid and s.sid = ts.sid;
+    </select>
+    <!--插入关联信息-->
+    <insert id="insertTeacherStudent">
+        insert teacher_student(tid, sid) values
+        <foreach collection="students" item="s" separator=",">
+            (#{teacher.tid}, #{s.sid})
+        </foreach>
+    </insert>
+</mapper>

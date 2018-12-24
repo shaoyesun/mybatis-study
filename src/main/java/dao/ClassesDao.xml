@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.ClassesDao">
+    <!--
+        主键名不能重复
+        主表和明细表的主键都是id的话，明细表的多条数据只能查询出来第一条/最后一条数据
+        解决方案：
+        1）修改主表或者明细表的id名，保证不一致就行
+        2）查询结果起别名
+    -->
+    <resultMap id="classesMap" type="Classes">
+        <id column="cid" property="cid"/>
+        <result column="classes_name" property="classesName"/>
+        <collection property="students" ofType="Student">
+            <id column="sid" property="sid"/>
+            <result column="student_name" property="studentName"/>
+        </collection>
+    </resultMap>
+    <select id="findOneClasses" resultMap="classesMap" parameterType="Long">
+        select * from classes c, student s  where c.cid = s.classes_id and c.cid = #{cid};
+    </select>
+    <insert id="insertClasses" useGeneratedKeys="true" keyProperty="cid">
+    </insert>
+</mapper>
