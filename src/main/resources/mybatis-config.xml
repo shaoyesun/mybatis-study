@@ -27,6 +27,7 @@
         <typeAlias alias="Student" type="domain.Student" />
         <typeAlias alias="Teacher" type="domain.Teacher" />
     </typeAliases>
+    <!--分页拦截器-->
     <plugins>
         <plugin interceptor="interceptor.PageIntercept"/>
     </plugins>
